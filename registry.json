@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-10-30T10:00:30.583Z",
+  "lastUpdated": "2025-10-30T10:00:42.587Z",
   "totalScripts": 1,
   "scripts": [
     {
@@ -24,7 +24,7 @@
       "downloads": 0,
       "featured": true,
       "createdAt": "2025-10-30T00:00:00Z",
-      "updatedAt": "2025-10-30T10:00:30.583Z",
+      "updatedAt": "2025-10-30T10:00:42.587Z",
       "urls": {
         "script": "https://raw.githubusercontent.com/brunoleos/tagverse-community-scripts/main/scripts/task-counter/script.js",
         "manifest": "https://raw.githubusercontent.com/brunoleos/tagverse-community-scripts/main/scripts/task-counter/manifest.json",
