@@ -1,0 +1,65 @@
+name: Script Request
+description: Request a new community script
+title: "[Request] "
+labels: ["enhancement", "script-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea for a useful script? Let us know!
+
+  - type: input
+    id: name
+    attributes:
+      label: Script Name
+      description: What would you call this script?
+      placeholder: e.g., "Daily Habit Tracker"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should this script do?
+      placeholder: Detailed description of the functionality
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: How would you use this script?
+      placeholder: Describe your workflow or scenario
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example
+      description: What would the output look like?
+      placeholder: |
+        #habit-tracker
+        → Shows: ✓ Meditation ✗ Exercise ✓ Reading
+
+  - type: checkboxes
+    id: labels
+    attributes:
+      label: Suggested Labels
+      options:
+        - label: productivity
+        - label: analytics
+        - label: utilities
+        - label: visual
+        - label: navigation
+        - label: tasks
+        - label: notes
+        - label: Other
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any mockups, screenshots, or other helpful info?

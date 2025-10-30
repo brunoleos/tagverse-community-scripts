@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-10-30T08:41:43.862Z",
+  "totalScripts": 1,
+  "scripts": [
+    {
+      "id": "task-counter",
+      "name": "Task Counter",
+      "description": "Shows task completion progress across all notes with this tag",
+      "author": {
+        "name": "brunoleos",
+        "github": "brunoleos",
+        "url": "https://github.com/brunoleos"
+      },
+      "version": "1.0.0",
+      "minTagverseVersion": "1.0.0",
+      "labels": [
+        "productivity",
+        "tasks",
+        "analytics",
+        "progress"
+      ],
+      "suggestedTag": "tasks",
+      "downloads": 0,
+      "featured": true,
+      "createdAt": "2025-10-30T00:00:00Z",
+      "updatedAt": "2025-10-30T08:41:43.860Z",
+      "urls": {
+        "script": "https://raw.githubusercontent.com/brunoleos/tagverse-community-scripts/main/scripts/task-counter/script.js",
+        "manifest": "https://raw.githubusercontent.com/brunoleos/tagverse-community-scripts/main/scripts/task-counter/manifest.json",
+        "readme": "https://github.com/brunoleos/tagverse-community-scripts/tree/main/scripts/task-counter"
+      },
+      "arguments": []
+    }
+  ]
+}

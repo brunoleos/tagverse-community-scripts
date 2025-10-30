@@ -1,0 +1,17 @@
+{
+  "id": "task-counter",
+  "name": "Task Counter",
+  "description": "Shows task completion progress across all notes with this tag",
+  "version": "1.0.0",
+  "author": {
+    "name": "brunoleos",
+    "github": "brunoleos"
+  },
+  "minTagverseVersion": "1.0.0",
+  "labels": ["productivity", "tasks", "analytics", "progress"],
+  "suggestedTag": "tasks",
+  "arguments": [],
+  "featured": true,
+  "downloads": 0,
+  "createdAt": "2025-10-30T00:00:00Z"
+}

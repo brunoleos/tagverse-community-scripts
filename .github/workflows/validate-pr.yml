@@ -1,0 +1,154 @@
+name: Validate Script Submission
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Get changed scripts
+        id: changed-scripts
+        uses: tj-actions/changed-files@v40
+        with:
+          files: scripts/**
+          dir_names: true
+          dir_names_max_depth: 2
+
+      - name: Validate script structure
+        run: |
+          echo "Validating script submissions..."
+
+          for script_dir in ${{ steps.changed-scripts.outputs.all_changed_files }}; do
+            # Extract script ID from path
+            script_id=$(basename "$script_dir")
+            echo "Validating $script_id..."
+
+            # Check required files exist
+            if [ ! -f "$script_dir/script.js" ]; then
+              echo "❌ Error: Missing script.js in $script_id"
+              exit 1
+            fi
+
+            if [ ! -f "$script_dir/manifest.json" ]; then
+              echo "❌ Error: Missing manifest.json in $script_id"
+              exit 1
+            fi
+
+            if [ ! -f "$script_dir/README.md" ]; then
+              echo "❌ Error: Missing README.md in $script_id"
+              exit 1
+            fi
+
+            echo "✅ Required files present for $script_id"
+          done
+
+      - name: Validate manifest.json format
+        run: |
+          for script_dir in ${{ steps.changed-scripts.outputs.all_changed_files }}; do
+            manifest="$script_dir/manifest.json"
+
+            if [ -f "$manifest" ]; then
+              echo "Validating $manifest..."
+
+              # Check valid JSON
+              if ! jq empty "$manifest" 2>/dev/null; then
+                echo "❌ Error: Invalid JSON in $manifest"
+                exit 1
+              fi
+
+              # Check required fields
+              required_fields=("id" "name" "description" "version" "author" "minTagverseVersion" "labels" "suggestedTag")
+
+              for field in "${required_fields[@]}"; do
+                if ! jq -e ".$field" "$manifest" >/dev/null; then
+                  echo "❌ Error: Missing required field '$field' in $manifest"
+                  exit 1
+                fi
+              done
+
+              # Validate version format (semver)
+              version=$(jq -r '.version' "$manifest")
+              if ! echo "$version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+                echo "❌ Error: Invalid version format '$version' in $manifest (should be X.Y.Z)"
+                exit 1
+              fi
+
+              # Check script ID matches folder name
+              script_id=$(basename "$script_dir")
+              manifest_id=$(jq -r '.id' "$manifest")
+              if [ "$script_id" != "$manifest_id" ]; then
+                echo "❌ Error: Script ID mismatch - folder: $script_id, manifest: $manifest_id"
+                exit 1
+              fi
+
+              echo "✅ Manifest valid for $script_id"
+            fi
+          done
+
+      - name: Check for dangerous code patterns
+        run: |
+          for script_dir in ${{ steps.changed-scripts.outputs.all_changed_files }}; do
+            script_file="$script_dir/script.js"
+
+            if [ -f "$script_file" ]; then
+              echo "Checking $script_file for security issues..."
+
+              # Check for eval()
+              if grep -q "eval(" "$script_file"; then
+                echo "⚠️  Warning: Found eval() in $script_file - will require manual review"
+              fi
+
+              # Check for Function constructor
+              if grep -qE "new\s+Function\(" "$script_file"; then
+                echo "⚠️  Warning: Found Function() constructor in $script_file - will require manual review"
+              fi
+
+              # Check for fetch/XMLHttpRequest without documentation
+              if grep -qE "(fetch\(|XMLHttpRequest)" "$script_file"; then
+                echo "⚠️  Warning: Found network requests in $script_file - ensure documented in README"
+              fi
+
+              echo "✅ Basic security check passed for $script_file"
+            fi
+          done
+
+      - name: Validate script has render function
+        run: |
+          for script_dir in ${{ steps.changed-scripts.outputs.all_changed_files }}; do
+            script_file="$script_dir/script.js"
+
+            if [ -f "$script_file" ]; then
+              if ! grep -q "function render" "$script_file"; then
+                echo "❌ Error: No render() function found in $script_file"
+                exit 1
+              fi
+
+              echo "✅ render() function found in $script_file"
+            fi
+          done
+
+      - name: Post validation summary
+        if: success()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Automated validation passed!**\n\nYour script submission looks good. A maintainer will review it shortly.\n\n**Next steps:**\n- Maintainer code review\n- Testing\n- Merge and registry update'
+            })
+
+            

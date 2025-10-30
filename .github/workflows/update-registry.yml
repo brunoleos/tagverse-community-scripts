@@ -1,0 +1,53 @@
+name: Update Registry
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/**'
+  workflow_dispatch:
+
+jobs:
+  update-registry:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Generate registry.json
+        run: node tools/generate-registry.js
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if git diff --quiet registry.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push registry update
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add registry.json
+          git commit -m "chore: auto-update registry.json [skip ci]"
+          git push
+
+      - name: Post summary
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          echo "✅ Registry updated successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Total scripts: $(jq '.totalScripts' registry.json)" >> $GITHUB_STEP_SUMMARY
+          echo "Last updated: $(jq -r '.lastUpdated' registry.json)" >> $GITHUB_STEP_SUMMARY

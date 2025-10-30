@@ -1,0 +1,108 @@
+name: Bug Report
+description: Report a bug with a community script
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please fill out this form to help us fix it.
+
+  - type: input
+    id: script
+    attributes:
+      label: Script Name/ID
+      description: Which script has the bug?
+      placeholder: e.g., task-counter
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Clear description of the bug
+      placeholder: Describe what's happening
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead?
+      placeholder: Describe expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this bug?
+      placeholder: |
+        1. Install script
+        2. Use tag #example
+        3. See error
+    validations:
+      required: true
+
+  - type: input
+    id: obsidian-version
+    attributes:
+      label: Obsidian Version
+      placeholder: e.g., 1.4.16
+    validations:
+      required: true
+
+  - type: input
+    id: tagverse-version
+    attributes:
+      label: Tagverse Version
+      placeholder: e.g., 1.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: script-version
+    attributes:
+      label: Script Version
+      placeholder: e.g., 1.0.2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Which mode?
+      options:
+        - Reading mode
+        - Live Preview mode
+        - Both
+    validations:
+      required: true
+
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Which theme?
+      options:
+        - Light theme
+        - Dark theme
+        - Both
+    validations:
+      required: true
+
+  - type: textarea
+    id: console-errors
+    attributes:
+      label: Console Errors
+      description: Any errors in the console? (Ctrl+Shift+I → Console tab)
+      placeholder: Paste console errors here
+      render: shell
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other information that might help
